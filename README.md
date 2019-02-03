@@ -11,4 +11,4 @@
 
 ## How to run tests
 
-- `ruby test/test_rover.rb`
+- `ruby test/test_rover.rb` from within `/usr/src/` in the docker container.

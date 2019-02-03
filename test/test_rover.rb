@@ -1,5 +1,5 @@
 require "minitest/autorun"
-load "run_rovers.rb"
+load "rover.rb"
 
 class RoverTest < Minitest::Test
   def setup
@@ -33,6 +33,14 @@ class RoverTest < Minitest::Test
 
   def test_parse_commands
     assert_equal '3 6 W', @rover.parse_commands().to_s
+
+    assert_raises(RuntimeError) do
+      Rover.new(2, 3, 'F', 'LMLMLM').parse_commands().to_s
+    end
+
+    assert_raises(ArgumentError) do
+      Rover.new(2, 3, 'N', 'LMULMLM').parse_commands().to_s
+    end
   end
 end
 
@@ -50,15 +58,15 @@ MMRMMLMMML
 ")
   end
 
-  def test_plateau_size
+  def test_plateau_size_is_read
     assert_equal({x: 34, y: 65}, @control.plateau_size)
   end
 
-  def test_rovers
+  def test_rovers_are_initialized
     assert_equal '3 20 E', @control.rovers[3].to_s
   end
 
-  def test_run_rovers
+  def test_run_rovers_sets_the_final_locations
     @control.run_rovers
     assert_equal '8 18 N', @control.rovers[3].to_s
   end

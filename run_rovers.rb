@@ -24,6 +24,8 @@ class Rover
   end
 
   def parse_next_command(command)
+    # TODO What happens if the command sends the rover off the plateau?  Thats a nasty edge case.
+    # TODO What happens if the commands sends the rover into a square occupied by another rover?
     case command
     when "M"
       move_forward

@@ -1,26 +1,23 @@
 #!/usr/local/bin/ruby
 
-def print_input(input = "./input.txt")
-  input = File.read(input)
-
-  p input
-end
-
-def plateau_size(input)
-  input.split('\n').first
-end
-
 class Rover
-  attr_accessor :x, :y, :direction
+  attr_accessor :x, :y, :direction, :commands
 
-  def initialize(x, y, direction)
+  def initialize(x, y, direction, commands)
     @x = x
     @y = y
     @direction = direction
+    @commands = commands
   end
 
   def to_s
     "#{x} #{y} #{direction}"
+  end
+
+  def parse_commands()
+    commands.split('').each {|c| parse_next_command(c) }
+
+    self
   end
 
   def parse_next_command(command)
@@ -89,3 +86,43 @@ class Rover
     self
   end
 end
+
+class RoverControl
+  attr_reader :plateau_size, :rovers
+
+  def initialize(input_string)
+      lines = input_string.split("\n")
+
+    plateau_match = lines[0].match(/(\d+) (\d+)/)
+    @plateau_size = {
+      x: plateau_match[1].to_i,
+      y: plateau_match[2].to_i
+    }
+
+    @rovers = lines[1..-1].each_slice(2).map do |r|
+      match = r.first.match(/(\d+) (\d+) (\w)/)
+      commands = r[1]
+
+      Rover.new(
+        match[1].to_i,
+        match[2].to_i,
+        match[3],
+        commands
+      )
+    end
+  end
+
+  def run_rovers
+    @output = @rovers.map do |r|
+      r.parse_commands.to_s
+    end
+  end
+
+  def print
+    puts @output
+  end
+end
+
+rc = RoverControl.new(File.read('./input.txt'))
+rc.run_rovers
+rc.print
